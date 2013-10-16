@@ -43,7 +43,7 @@ module Finance
     #   [-4000,1200,1410,1875,1050].irr #=> 0.143
     # @see http://en.wikipedia.org/wiki/Internal_rate_of_return
     # @api public
-    def irr
+    def irr(init_rate=1.0)
       # Make sure we have a valid sequence of cash flows.
       positives, negatives = self.partition{ |i| i >= 0 }
       if positives.empty? || negatives.empty?
@@ -51,7 +51,7 @@ module Finance
       end
 
       func = Function.new(self, :npv)
-      rate = [ func.one ]
+      rate = [ init_rate ]
       nlsolve( func, rate )
       rate[0]
     end
