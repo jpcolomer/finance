@@ -3,12 +3,12 @@ require_relative 'rates'
 
 require 'bigdecimal'
 require 'bigdecimal/newton'
-include Newton
 
 module Finance
   # Provides methods for working with cash flows (collections of transactions)
   # @api public
   module Cashflow
+    include Newton
     # Base class for working with Newton's Method.
     # @api private
     class Function
@@ -88,7 +88,7 @@ module Finance
     #   @transactions << Transaction.new(  600, :date => Time.new(1995,01,01))
     #   @transactions.xirr(0.6) #=> Rate("0.024851", :apr, :compounds => :annually)
     # @api public
-    def xirr(iterations=100)
+    def xirr(iterations=100, init_rate=1.0)
       # Make sure we have a valid sequence of cash flows.
       positives, negatives = self.partition{ |t| t.amount >= 0 }
       if positives.empty? || negatives.empty?
@@ -96,7 +96,7 @@ module Finance
       end
 
       func = Function.new(self, :xnpv)
-      rate = [ func.one ]
+      rate = [ init_rate ]
       nlsolve( func, rate )
       Rate.new(rate[0], :apr, :compounds => :annually)
     end
