@@ -51,7 +51,7 @@ module Finance
       end
 
       func = Function.new(self, :npv)
-      rate = [ init_rate ]
+      rate = [ BigDecimal.new(init_rate.to_s) ]
       nlsolve( func, rate )
       rate[0]
     end
@@ -96,7 +96,7 @@ module Finance
       end
 
       func = Function.new(self, :xnpv)
-      rate = [ init_rate ]
+      rate = [ BigDecimal.new(init_rate.to_s) ]
       nlsolve( func, rate )
       Rate.new(rate[0], :apr, :compounds => :annually)
     end
